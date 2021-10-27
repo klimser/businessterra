@@ -1,7 +1,8 @@
 <?php
 
 use yii\bootstrap4\Html;
-use himiklab\yii2\recaptcha\ReCaptcha;
+use himiklab\yii2\recaptcha\ReCaptcha2;
+use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
 /* @var $page common\models\Page */
@@ -361,7 +362,7 @@ $this->registerJsFile(\common\components\ComponentContainer::getPaymoApi()->getW
     <div id="order_form" class="modal fade order_form" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <?= Html::beginForm(\yii\helpers\Url::to(['order/create']), 'post', ['onsubmit' => 'return MainPage.completeOrder(this);']); ?>
+                <?= Html::beginForm(Url::to(['order/create']), 'post', ['onsubmit' => 'return MainPage.completeOrder(this);']); ?>
                 <div class="modal-header border-bottom border-danger">
                     <h5 class="modal-title">Выберите билет, подходящий именно Вам</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
@@ -411,14 +412,14 @@ $this->registerJsFile(\common\components\ComponentContainer::getPaymoApi()->getW
                                 <input type="tel" name="order[phoneFormatted]" id="order-phone" class="form-control order-phone" maxlength="11" pattern="\d{2} \d{3}-\d{4}" required>
                             </div>
                         </div>
-                        <?= ReCaptcha::widget(['name' => 'order[reCaptcha]', 'theme' => 'dark']) ?>
+                        <?= ReCaptcha2::widget(['name' => 'order[reCaptcha]', 'theme' => 'dark']) ?>
                     </div>
                     <div class="order_form_extra hidden"></div>
                 </div>
                 <div class="modal-footer border-top border-danger">
                     <button type="button" class="btn red-button-outline" data-dismiss="modal">отмена</button>
                     <button class="btn red-button">оставить заявку</button>
-                    <button type="button" class="btn red-button" data-action="<?= \yii\helpers\Url::to(['order/create-payment']); ?>" onclick="MainPage.buyTicket(this);">купить билет онлайн</button>
+                    <button type="button" class="btn red-button" data-action="<?= Url::to(['order/create-payment']); ?>" onclick="MainPage.buyTicket(this);">купить билет онлайн</button>
                 </div>
                 <?= Html::endForm(); ?>
             </div>

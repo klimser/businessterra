@@ -6,7 +6,7 @@ use common\components\ComponentContainer;
 use common\components\extended\ActiveRecord;
 use common\models\traits\Inserted;
 use common\models\traits\Phone;
-use himiklab\yii2\recaptcha\ReCaptchaValidator;
+use himiklab\yii2\recaptcha\ReCaptchaValidator2;
 use yii;
 
 /**
@@ -79,7 +79,7 @@ class Order extends ActiveRecord
             [['user_comment', 'admin_comment'], 'string', 'max' => 255],
             ['status', 'in', 'range' => array_keys(self::$statusLabels)],
             ['status', 'default', 'value' => self::STATUS_UNREAD],
-            [['reCaptcha'], ReCaptchaValidator::class, 'on' => self::SCENARIO_USER],
+            [['reCaptcha'], ReCaptchaValidator2::class, 'on' => self::SCENARIO_USER],
         ];
     }
 
@@ -118,7 +118,6 @@ class Order extends ActiveRecord
                     'order-text',
                     ['userName' => $this->name, 'subjectName' => $this->subject]
                 );
-                break;
             case self::STATUS_PAID:
                 return ComponentContainer::getMailQueue()->add(
                     'На сайте businessterra.uz новая оплаченная заявка!',
@@ -127,10 +126,8 @@ class Order extends ActiveRecord
                     'order-paid-text',
                     ['userName' => $this->name, 'subjectName' => $this->subject]
                 );
-                break;
         }
         return true;
-
     }
 
     /**

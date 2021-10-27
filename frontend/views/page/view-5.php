@@ -1,7 +1,8 @@
 <?php
 
 use yii\bootstrap4\Html;
-use himiklab\yii2\recaptcha\ReCaptcha;
+use himiklab\yii2\recaptcha\ReCaptcha2;
+use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
 /* @var $page common\models\Page */
@@ -304,7 +305,7 @@ SCRIPT
                     <div class="clearfix"></div>
                 </div>
             </div>
-            <?= Html::beginForm(\yii\helpers\Url::to(['order/create']), 'post', ['onsubmit' => 'return MainPage.completeOrder(this);', 'class' => 'order_form']); ?>
+            <?= Html::beginForm(Url::to(['order/create']), 'post', ['onsubmit' => 'return MainPage.completeOrder(this);', 'class' => 'order_form']); ?>
                 <div class="order_form_body row">
                     <input type="hidden" name="order[subject]" value="Дмитрий Карнаухов">
                     <div class="col-12 col-sm-6 col-lg-5">
@@ -319,7 +320,7 @@ SCRIPT
                     <div class="col-12 col-sm-6 col-lg-7">
                         <div class="row">
                             <div class="col-12 col-lg-7 mt-2 mt-sm-0">
-                                <?= ReCaptcha::widget(['name' => 'order[reCaptcha]', 'theme' => 'dark']) ?>
+                                <?= ReCaptcha2::widget(['name' => 'order[reCaptcha]', 'theme' => 'dark']) ?>
                             </div>
                             <div class="col-12 col-lg-5 mt-2 mt-lg-0">
                                 <button class="w-100 complete-button">Получить тайминг</button>
@@ -388,7 +389,7 @@ SCRIPT
     <div id="order_form" class="modal fade order_form" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <?= Html::beginForm(\yii\helpers\Url::to(['order/create']), 'post', ['onsubmit' => 'fbq("track", "Lead"); return MainPage.completeOrder(this);']); ?>
+                <?= Html::beginForm(Url::to(['order/create']), 'post', ['onsubmit' => 'fbq("track", "Lead"); return MainPage.completeOrder(this);']); ?>
                 <div class="modal-header border-bottom border-danger">
                     <h5 class="modal-title">Оставить заявку</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
@@ -409,7 +410,7 @@ SCRIPT
                                 <input type="tel" name="order[phoneFormatted]" id="order-phone" class="form-control order-phone" maxlength="11" pattern="\d{2} \d{3}-\d{4}" required>
                             </div>
                         </div>
-                        <?= ReCaptcha::widget(['name' => 'order[reCaptcha]', 'theme' => 'dark']) ?>
+                        <?= ReCaptcha2::widget(['name' => 'order[reCaptcha]', 'theme' => 'dark']) ?>
                     </div>
                     <div class="order_form_extra hidden"></div>
                 </div>

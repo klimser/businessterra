@@ -1,7 +1,8 @@
 <?php
 
+use common\components\ComponentContainer;
 use yii\bootstrap4\Html;
-use himiklab\yii2\recaptcha\ReCaptcha;
+use himiklab\yii2\recaptcha\ReCaptcha2;
 use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
@@ -12,7 +13,7 @@ $this->registerJs(<<<SCRIPT
     MainPage.init();
 SCRIPT
 );
-$this->registerJsFile(\common\components\ComponentContainer::getPaymoApi()->getWidgetUrl());
+$this->registerJsFile(ComponentContainer::getPaymoApi()->getWidgetUrl());
 
 ?>
 
@@ -328,7 +329,7 @@ $this->registerJsFile(\common\components\ComponentContainer::getPaymoApi()->getW
                                 <input type="tel" name="order[phoneFormatted]" id="order-phone" class="form-control order-phone" maxlength="11" pattern="\d{2} \d{3}-\d{4}" required>
                             </div>
                         </div>
-                        <?= ReCaptcha::widget(['name' => 'order[reCaptcha]']) ?>
+                        <?= ReCaptcha2::widget(['name' => 'order[reCaptcha]']) ?>
                     </div>
                     <div class="order_form_extra hidden"></div>
                 </div>
