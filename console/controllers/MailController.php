@@ -2,9 +2,11 @@
 
 namespace console\controllers;
 
-use common\components\telegram\Request;
+use common\components\ComponentContainer;
 use common\models\EmailQueue;
 use Longman\TelegramBot\DB;
+use Longman\TelegramBot\Entities\Entity;
+use Longman\TelegramBot\Request;
 use yii;
 use yii\console\Controller;
 
@@ -21,17 +23,16 @@ class MailController extends Controller
     public function actionSend()
     {
         $condition = ['state' => EmailQueue::STATUS_NEW];
-        
-        $toSend = EmailQueue::findOne($condition);
 
         $tryTelegram = false;
-        if (array_key_exists('telegramAdminNotifier', \Yii::$app->components)) {
-            \Yii::$app->telegramAdminNotifier->telegram;
+        if (array_key_exists('telegramAdminNotifier', Yii::$app->components)) {
+            Yii::$app->db->open();
+            ComponentContainer::getTelegramAdminNotifier()->initBot();
             $subscribed = DB::selectChats([]);
             if (!empty($subscribed)) $tryTelegram = true;
         }
         
-        while ($toSend) {
+        while ($toSend = EmailQueue::findOne($condition)) {
             $toSend->state = EmailQueue::STATUS_SENDING;
             $toSend->save();
 
@@ -39,22 +40,20 @@ class MailController extends Controller
 
             $sendEmail = true;
             if ($tryTelegram) {
-                $message = null;
-                switch ($toSend->template_html) {
-                    case 'order-html':
-                        $message = "На сайте посетитель {$params['userName']} оставил заявку на занятие \"{$params['subjectName']}\".\n"
-                            . '[Обработать заявку](https://cabinet.businessterra.uz/order/index)';
-                        break;
-                    case 'order-paid-html':
-                        $message = "На сайте посетитель оплатил заявку на занятие \"{$params['subjectName']}\".\n"
-                            . '[Просмотреть заявку](https://cabinet.businessterra.uz/order/index)';
-                        break;
-                }
+                $message = match ($toSend->template_html) {
+                    'order-html' => "На сайте посетитель {$params['userName']} оставил заявку на занятие \"{$params['subjectName']}\".\n",
+                    'order-paid-html' => "На сайте посетитель оплатил заявку на занятие \"{$params['subjectName']}\".\n",
+                    default => null,
+                };
+                $link = '[Просмотреть заявку](https://cabinet.businessterra.uz/order/index)';
                 if ($message) {
                     /** @var \Longman\TelegramBot\Entities\ServerResponse[] $results */
                     $results = Request::sendToActiveChats(
                         'sendMessage',
-                        ['parse_mode' => 'Markdown', 'text' => $message],
+                        [
+                            'parse_mode' => 'MarkdownV2',
+                            'text' => Entity::escapeMarkdownV2($message) . $link,
+                        ],
                         [
                             'groups'      => true,
                             'supergroups' => true,
@@ -83,8 +82,6 @@ class MailController extends Controller
                 else $toSend->state = EmailQueue::STATUS_ERROR;
                 $toSend->save();
             }
-
-            $toSend = EmailQueue::findOne($condition);
         }
         return yii\console\ExitCode::OK;
     }

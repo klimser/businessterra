@@ -2,13 +2,14 @@
 
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
-use common\components\telegram\Request;
-use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Request;
 
 /**
  * Start command
  */
-class StartCommand extends SystemCommand
+class StartCommand extends UserCommand
 {
     /**
      * @var string
@@ -30,13 +31,7 @@ class StartCommand extends SystemCommand
      */
     protected $version = '1.0.0';
 
-    /**
-     * Command execute method
-     *
-     * @return mixed
-     * @throws \Longman\TelegramBot\Exception\TelegramException
-     */
-    public function execute()
+    public function execute(): ServerResponse
     {
         $message = $this->getMessage();
         $chat_id = $message->getChat()->getId();

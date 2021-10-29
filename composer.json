@@ -28,7 +28,8 @@
     "himiklab/yii2-recaptcha-widget": "^2",
     "longman/telegram-bot": "*",
     "yiisoft/yii2-bootstrap4": "~2.0",
-    "ext-json": "*"
+    "ext-json": "*",
+    "yiisoft/yii2-redis": "^2.0"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "*",
